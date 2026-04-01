@@ -43,9 +43,37 @@ def get_volatility(ticker: str) -> float:
     
     return float(returns.std())
 
+def get_RSI(ticker: str) -> str:
+    """
+    Get RSI indicator for a stock ticker
+    """
+    
+    data = yf.download(ticker, period="3mo")
+    
+    delta = data["Close"].diff()
+    
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    
+    latest_rsi = rsi.iloc[-1].item()
+    
+    if latest_rsi > 70:
+        signal = "Overbought"
+    elif latest_rsi < 30:
+        signal = "Oversold"
+    else:
+        signal = "Neutral"
+    
+    return f"{ticker} RSI: {latest_rsi:.2f} ({signal})"
+
+
+
 agent = create_agent(
     model=model,
-    tools=[get_stock_price, get_market_cap, get_volatility],
+    tools=[get_stock_price, get_market_cap, get_volatility, get_RSI],
     system_prompt="""
 You are a quantitative finance assistant.
 
