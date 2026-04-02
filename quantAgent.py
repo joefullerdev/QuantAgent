@@ -1,7 +1,6 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-
 from langchain.agents import create_agent
 from langchain_ollama import ChatOllama
 
@@ -10,16 +9,17 @@ import yfinance as yf
 import os
 from dotenv import load_dotenv, dotenv_values
 
-from agentTools import *
+from agentTools import * #Loads all functions from agentTools.py
 
-load_dotenv()
+load_dotenv() #Loads environment variables (API Keys)
 
 model = ChatOllama(
     model="qwen2.5:7b",
     temperature=0
-)
+) 
 
-agent = create_agent(
+#Agent creation - loads LLM, tools and define a system prompt
+agent = create_agent( 
     model=model,
     tools=[get_stock_price, get_market_cap, get_volatility, get_RSI],
     system_prompt="""
