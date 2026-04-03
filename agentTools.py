@@ -1,4 +1,9 @@
 import yfinance as yf
+import os
+from dotenv import load_dotenv
+import requests
+
+load_dotenv()
 
 def get_stock_price(ticker: str) -> str:
     """Get real-time stock price"""
@@ -51,3 +56,57 @@ def get_RSI(ticker: str) -> str:
         signal = "Neutral"
     
     return f"{ticker} RSI: {latest_rsi:.2f} ({signal})"
+
+def get_news_sentiment(tickers: str) -> str:
+    """
+    Get news sentiment for one or more tickers.
+    Example input: "AAPL" or "AAPL,TSLA,NVDA"
+    """
+    
+    api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
+    
+    ticker_list = [t.strip().upper() for t in tickers.split(",")]
+    
+    results = []
+
+    for ticker in ticker_list:
+        try:
+            url = "https://www.alphavantage.co/query"
+            
+            params = {
+                "function": "NEWS_SENTIMENT",
+                "tickers": ticker,
+                "apikey": api_key
+            }
+
+            response = requests.get(url, params=params)
+            data = response.json()
+
+            articles = data.get("feed", [])[:10]
+
+            if not articles:
+                results.append(f"{ticker}: No news found")
+                continue
+
+            sentiments = [
+                float(article["overall_sentiment_score"])
+                for article in articles
+            ]
+
+            avg_sentiment = sum(sentiments) / len(sentiments)
+
+            if avg_sentiment > 0.2:
+                signal = "Bullish"
+            elif avg_sentiment < -0.2:
+                signal = "Bearish"
+            else:
+                signal = "Neutral"
+
+            results.append(
+                f"{ticker}: {avg_sentiment:.2f} ({signal})"
+            )
+
+        except Exception as e:
+            results.append(f"{ticker}: Error")
+
+    return "News Sentiment:\n\n" + "\n".join(results)

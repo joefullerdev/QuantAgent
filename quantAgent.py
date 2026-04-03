@@ -6,6 +6,7 @@ from langchain_ollama import ChatOllama
 
 import yfinance as yf
 
+import sys
 import os
 from dotenv import load_dotenv, dotenv_values
 
@@ -21,7 +22,7 @@ model = ChatOllama(
 #Agent creation - loads LLM, tools and define a system prompt
 agent = create_agent( 
     model=model,
-    tools=[get_stock_price, get_market_cap, get_volatility, get_RSI],
+    tools=[get_stock_price, get_market_cap, get_volatility, get_RSI, get_news_sentiment],
     system_prompt="""
 You are a quantitative finance assistant.
 
