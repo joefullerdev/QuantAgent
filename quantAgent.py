@@ -22,7 +22,7 @@ model = ChatOllama(
 #Agent creation - loads LLM, tools and define a system prompt
 agent = create_agent( 
     model=model,
-    tools=[get_stock_price, get_market_cap, get_volatility, get_RSI, get_news_sentiment],
+    tools=[get_stock_price, get_market_cap, get_volatility, get_RSI, get_news_sentiment, get_multi_ema],
     system_prompt="""
 You are a quantitative finance assistant.
 

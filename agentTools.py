@@ -110,3 +110,35 @@ def get_news_sentiment(tickers: str) -> str:
             results.append(f"{ticker}: Error")
 
     return "News Sentiment:\n\n" + "\n".join(results)
+
+def get_multi_ema(ticker: str) -> str:
+    """
+    Get multiple EMAs for a stock
+    """
+    
+    data = yf.download(ticker, period="6mo")
+    
+    data["EMA_9"] = data["Close"].ewm(span=9, adjust=False).mean()
+    data["EMA_20"] = data["Close"].ewm(span=20, adjust=False).mean()
+    data["EMA_50"] = data["Close"].ewm(span=50, adjust=False).mean()
+    
+    price = data["Close"].iloc[-1].item()
+    ema9 = data["EMA_9"].iloc[-1].item()
+    ema20 = data["EMA_20"].iloc[-1].item()
+    ema50 = data["EMA_50"].iloc[-1].item()
+    
+    if ema9 > ema20 > ema50:
+        trend = "Strong Bullish"
+    elif ema9 < ema20 < ema50:
+        trend = "Strong Bearish"
+    else:
+        trend = "Mixed"
+    
+    return (
+        f"{ticker}\n"
+        f"Price: {price:.2f}\n"
+        f"9 EMA: {ema9:.2f}\n"
+        f"20 EMA: {ema20:.2f}\n"
+        f"50 EMA: {ema50:.2f}\n"
+        f"Trend: {trend}"
+    )
