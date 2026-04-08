@@ -2,8 +2,9 @@ import yfinance as yf
 import os
 from dotenv import load_dotenv
 import requests
+import sys
 
-from logger import logger
+from utils.logger import logger
 
 load_dotenv()
 

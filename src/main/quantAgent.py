@@ -10,7 +10,7 @@ import sys
 import os
 from dotenv import load_dotenv, dotenv_values
 
-from agentTools import * #Loads all functions from agentTools.py
+from src.main.agentTools import * #Loads all functions from agentTools.py
 
 load_dotenv() #Loads environment variables (API Keys)
 
