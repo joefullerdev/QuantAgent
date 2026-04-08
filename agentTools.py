@@ -3,10 +3,14 @@ import os
 from dotenv import load_dotenv
 import requests
 
+from logger import logger
+
 load_dotenv()
 
 def get_stock_price(ticker: str) -> str:
     """Get real-time stock price"""
+
+    logger.info(f"Fetching price for {ticker}")
     
     stock = yf.Ticker(ticker)
     data = stock.history(period="1d")
@@ -15,6 +19,8 @@ def get_stock_price(ticker: str) -> str:
 
 def get_market_cap(ticker: str) -> str:
     """Get company market cap"""
+
+    logger.info(f"Getting market cap of {ticker}")
     
     stock = yf.Ticker(ticker)
     info = stock.info
@@ -23,6 +29,8 @@ def get_market_cap(ticker: str) -> str:
 
 def get_volatility(ticker: str) -> float:
     """Calculate 30 day volatility"""
+
+    logger.info(f"Calculating 30 day volatility of {ticker}")
     
     stock = yf.Ticker(ticker)
     data = stock.history(period="1mo")
@@ -35,6 +43,8 @@ def get_RSI(ticker: str) -> str:
     """
     Get RSI indicator for a stock ticker
     """
+
+    logger.info(f"Calculating RSI of {ticker}")
     
     data = yf.download(ticker, period="3mo")
     
@@ -62,6 +72,8 @@ def get_news_sentiment(tickers: str) -> str:
     Get news sentiment for one or more tickers.
     Example input: "AAPL" or "AAPL,TSLA,NVDA"
     """
+
+    logger.info(f"Getting news sentiment of {ticker}")
     
     api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
     
@@ -115,6 +127,8 @@ def get_multi_ema(ticker: str) -> str:
     """
     Get multiple EMAs for a stock
     """
+
+    logger.info(f"Getting 9, 20 and 50 day EMA for {ticker}")
     
     data = yf.download(ticker, period="6mo")
     
